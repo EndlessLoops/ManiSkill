@@ -10,6 +10,14 @@
   <material name="motor">
     <color rgba="0.05 0.05 0.05 1" />
   </material>
+  <material name="black">
+    <color rgba="0.0 0.0 0.0 1" />
+  </material>
+  <material name="orange_plus">
+    <color rgba="1.0 0.130 0.0 1.0"/>
+  </material>
+
+
   <link
     name="Base">
     <inertial>
@@ -33,7 +41,7 @@
       <geometry>
         <mesh filename="meshes/Base.stl" />
       </geometry>
-      <material name="white">
+      <material name="black">
       </material>
     </visual>
     <visual name="base_link_motor">
@@ -354,13 +362,13 @@
     type="revolute">
     <origin
       xyz="0 0.0052 0.1349"
-      rpy="-1.5708 0 0" />
+      rpy="-1.5708 0 3.14" />
     <parent
       link="Lower_Arm" />
     <child
       link="Wrist_Pitch_Roll" />
     <axis
-      xyz="1 0 0" />
+      xyz="-1 0 0" />
     <limit 
       lower="-1.8"
       upper="1.8"
@@ -391,7 +399,7 @@
         <mesh
           filename="meshes/Fixed_Jaw.stl" />
       </geometry>
-      <material name="white">
+      <material name="orange_plus">
       </material>
     </visual>
     <visual name="fixed_jaw_motor">
@@ -429,7 +437,7 @@
     type="revolute">
     <origin
       xyz="0 -0.0601 0"
-      rpy="0 1.5708 0" />
+      rpy="0 -1.5708 0" />
     <parent
       link="Wrist_Pitch_Roll" />
     <child
@@ -466,7 +474,7 @@
         <mesh
           filename="meshes/Moving_Jaw.stl" />
       </geometry>
-      <material name="white">
+      <material name="orange_plus">
       </material>
     </visual>
     <collision>
@@ -502,7 +510,7 @@
     type="revolute">
     <origin
       xyz="-0.0202 -0.0244 0"
-      rpy="0 3.14159 -0.9" />
+      rpy="0 3.14159 -0.695" />
     <parent
       link="Fixed_Jaw" />
     <child
@@ -510,8 +518,8 @@
     <axis
       xyz="0 0 1" />
     <limit 
-      lower="-1.1"
-      upper="1.1"
+      lower="-0.876"
+      upper="0.876"
       effort="0"
       velocity="0" />
   </joint>

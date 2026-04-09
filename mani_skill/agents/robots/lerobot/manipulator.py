@@ -13,10 +13,10 @@ from mani_skill.utils import common
 from mani_skill.utils.structs.types import Array
 
 try:
-    from lerobot.common.cameras.camera import Camera
-    from lerobot.common.motors.motors_bus import MotorNormMode
-    from lerobot.common.robots.robot import Robot
-    from lerobot.common.utils.robot_utils import busy_wait
+    from lerobot.cameras.camera import Camera
+    from lerobot.motors import MotorNormMode
+    from lerobot.robots import Robot
+    from lerobot.utils.robot_utils import precise_sleep
 except ImportError:
     pass
 
@@ -41,7 +41,8 @@ class LeRobotRealAgent(BaseRealAgent):
         self._cached_qpos = None
         self._motor_keys: list[str] = None
 
-        if self.real_robot.name == "so100_follower":
+        # if self.real_robot.name == "so100_follower":
+        if self.real_robot.name in ("so100_follower", "so_follower"):
             self.real_robot.bus.motors["gripper"].norm_mode = MotorNormMode.DEGREES
 
     def start(self):
@@ -56,8 +57,10 @@ class LeRobotRealAgent(BaseRealAgent):
         qpos = torch.rad2deg(qpos)
         qpos = {f"{self._motor_keys[i]}.pos": qpos[i] for i in range(len(qpos))}
         # NOTE (stao): It seems the calibration from LeRobot has some offsets in some joints. We fix reading them here to match the expected behavior
-        if self.real_robot.name == "so100_follower":
-            qpos["elbow_flex.pos"] = qpos["elbow_flex.pos"] + 6.8
+        # if self.real_robot.name == "so100_follower":
+            # qpos["elbow_flex.pos"] = qpos["elbow_flex.pos"] + 6.8
+        if self.real_robot.name in ("so100_follower", "so_follower"):    
+            qpos["elbow_flex.pos"] = qpos["elbow_flex.pos"] 
         self.real_robot.send_action(qpos)
 
     def reset(self, qpos: Array):
@@ -76,7 +79,7 @@ class LeRobotRealAgent(BaseRealAgent):
 
             self.set_target_qpos(target_pos)
             dt_s = time.perf_counter() - start_loop_t
-            busy_wait(1 / freq - dt_s)
+            precise_sleep(1 / freq - dt_s)
 
     def capture_sensor_data(self, sensor_names: Optional[list[str]] = None):
         sensor_obs = dict()
@@ -111,8 +114,10 @@ class LeRobotRealAgent(BaseRealAgent):
         qpos_deg = self.real_robot.bus.sync_read("Present_Position")
 
         # NOTE (stao): It seems the calibration from LeRobot has some offsets in some joints. We fix reading them here to match the expected behavior
-        if self.real_robot.name == "so100_follower":
-            qpos_deg["elbow_flex"] = qpos_deg["elbow_flex"] - 6.8
+        # if self.real_robot.name == "so100_follower":        
+            # qpos_deg["elbow_flex"] = qpos_deg["elbow_flex"] - 6.8
+        if self.real_robot.name in ("so100_follower", "so_follower"):
+            qpos_deg["elbow_flex"] = qpos_deg["elbow_flex"]
         if self._motor_keys is None:
             self._motor_keys = list(qpos_deg.keys())
         qpos_deg = common.flatten_state_dict(qpos_deg)

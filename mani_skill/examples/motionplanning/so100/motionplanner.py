@@ -10,7 +10,7 @@ from mani_skill.examples.motionplanning.two_finger_gripper.motionplanner import 
 
 class SO100ArmMotionPlanningSolver (TwoFingerGripperMotionPlanningSolver):
     OPEN = 0
-    CLOSED = -0.8
+    CLOSED = -0.6
     MOVE_GROUP = "Fixed_Jaw_tip"
 
     def __init__(
